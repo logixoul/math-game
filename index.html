@@ -1,0 +1,115 @@
+﻿<html>
+	<head>
+		<title>Stef's Math Game</title>
+
+	</head>
+	<body>
+		<h1>Math game</h1>
+		<div id="container">
+		</div>
+		<input id="userAnswerBox" type="text" name="userAnswer" placeholder="Твоят отговор"></input>
+		<button id="btnStartOver" style="display:none;">ОТНАЧАЛО :)</input>
+
+		<script type="text/javascript">
+			function randomInt(min, max) {
+				var result = Math.random()*(max-min)+min;
+				return Math.floor(result);
+			}
+					
+			const container = document.getElementById("container");
+			const btnStartOver = document.getElementById("btnStartOver");
+			const editBox = document.getElementById("userAnswerBox");
+
+			
+			var latestPrompt;
+			var currentPromptIndex;
+			
+			var promptList = [];
+			for(var i = 0; i <= 1; i++) {
+				for(var j = 0; j <= 1; j++) {
+					const prompt = {
+						a: i,
+						b: j
+					};
+					promptList.push(prompt);
+				}
+			}
+			
+			function shufflePromptList() {
+				var shuffled = [];
+				const initialLength = promptList.length;
+				for(var i = 0; i < initialLength; i++) {
+					var sourceIndex = randomInt(0, promptList.length);
+					var takenPrompt = promptList.splice(sourceIndex, 1)[0];
+					shuffled.push(takenPrompt);
+				}
+				promptList = shuffled;
+			}
+			
+			function reinitGame() {
+				container.textContent = "";
+				editBox.style.display = "inline";
+				
+				currentPromptIndex = 0;
+				shufflePromptList();
+				showPrompt();
+			}
+
+			
+			function randomizePrompt() {
+				//currentPrompt.a = Math.floor(Math.random()*10);
+				//currentPrompt.b = Math.floor(Math.random()*10);
+				
+				currentPromptIndex++;
+			}
+			
+			function informUser(message, color, isBold) {
+				const newElement = document.createElement("p");
+				newElement.textContent = message;
+				newElement.style.color = color;
+				if(isBold)
+					newElement.style.fontWeight = "bold";
+				latestPrompt = newElement;
+				container.append(newElement);
+			}
+			function showPrompt() {
+				const currentPrompt = promptList[currentPromptIndex];
+				informUser(currentPrompt.a+"×"+currentPrompt.b+" = ", "black");
+			}
+			reinitGame();
+			
+			btnStartOver.addEventListener("click", function() {
+				btnStartOver.style.display = "none";
+				reinitGame();
+			});
+
+			
+			editBox.focus();
+			editBox.addEventListener("keydown",
+				function(event) {
+					if(event.key == "Enter") {
+						latestPrompt.textContent = latestPrompt.textContent + editBox.value;
+						
+						const currentPrompt = promptList[currentPromptIndex];
+						if(parseInt(editBox.value) == currentPrompt.a * currentPrompt.b) {
+							informUser("Точно така!", "green");
+							if(currentPromptIndex == promptList.length - 1) {
+								informUser("КЪРТИШ, АЛЕКС! ПОБЕДА!", "green", true);
+								editBox.style.display = "none";
+								btnStartOver.style.display = "inline";
+							} else {
+								randomizePrompt();
+								showPrompt();
+							}
+						} else {
+							informUser("Пробвай пак.", "black");
+							showPrompt();
+						}
+						editBox.value = "";
+						console.log("NULIRAH");
+					}
+				}
+			);
+		</script>
+	</body>
+</html>
