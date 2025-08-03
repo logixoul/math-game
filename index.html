@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE>
 <html>
 	<head>
-		<title>Stef's Math Game</title>
+		<title>Умножение</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
 			h1 {
@@ -17,10 +17,20 @@
 			input, button {
 				font-size: 1.2em !important;
 			}
+			#progressIndicator {
+				font-size: 1.2em !important;
+				float: right;
+				background-color: green;
+				border-radius: 6px;
+				color: white;
+				padding: 3px;
+			}
 		</style>
 	</head>
 	<body>
 		<h1>Игра с умножение за Алекс</h1>
+		<div id="progressIndicator">
+		</div>
 		<div id="container">
 		</div>
 		<input id="userAnswerBox" type="text"  inputmode="numeric" pattern="\d*" name="userAnswer" placeholder="Твоят отговор"></input>
@@ -69,13 +79,14 @@
 				editBox.style.display = "inline";
 				
 				currentPromptIndex = 0;
+				updateProgressIndicator();
 				shufflePromptList();
 				showPrompt();
 			}
 
-			
-			function randomizePrompt() {
-				currentPromptIndex++;
+			function updateProgressIndicator() {
+				const progressIndicator = document.getElementById("progressIndicator");
+				progressIndicator.textContent = Math.floor(100* currentPromptIndex / promptList.length) + "%";
 			}
 			
 			function informUser(message, color, isBold) {
@@ -118,7 +129,8 @@
 								editBox.style.display = "none";
 								btnStartOver.style.display = "inline";
 							} else {
-								randomizePrompt();
+								currentPromptIndex++;
+								updateProgressIndicator();
 								showPrompt();
 							}
 						} else {
