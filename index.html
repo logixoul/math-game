@@ -51,10 +51,12 @@
 			
 			var latestPrompt;
 			var currentPromptIndex;
+			var isFirstTry = true;
+			var numCorrectAtFirstTry = 0;
 			
 			var promptList = [];
-			for(var i = 0; i <= 10; i++) {
-				for(var j = 0; j <= 10; j++) {
+			for(var i = 0; i <= 1; i++) {
+				for(var j = 0; j <= 1; j++) {
 					const prompt = {
 						a: i,
 						b: j
@@ -79,9 +81,21 @@
 				editBox.style.display = "inline";
 				
 				currentPromptIndex = 0;
+				numCorrectAtFirstTry = 0;
 				updateProgressIndicator();
 				shufflePromptList();
 				showPrompt();
+			}
+
+			function win() {
+				informUser("КЪРТИШ, АЛЕКС! ПОБЕДА!", "green", true);
+				var timeElapsed = Date.now() - whenLastStarted;
+				const minutes = Math.floor(timeElapsed/60000);
+				const seconds = Math.floor(timeElapsed/1000) % 60;
+				const percentCorrectOnFirstTry = Math.round(100 * numCorrectAtFirstTry / promptList.length);
+				informUser("Отне ти " + minutes + "мин " + seconds + "сек. Познал си " + percentCorrectOnFirstTry + "% от първи опит.", "black");
+				editBox.style.display = "none";
+				btnStartOver.style.display = "inline";
 			}
 
 			function updateProgressIndicator() {
@@ -120,25 +134,23 @@
 						const currentPrompt = promptList[currentPromptIndex];
 						if(parseInt(editBox.value) == currentPrompt.a * currentPrompt.b) {
 							informUser("Точно така!", "green");
+							if(isFirstTry) {
+								numCorrectAtFirstTry++;
+							}
 							if(currentPromptIndex == promptList.length - 1) {
-								informUser("КЪРТИШ, АЛЕКС! ПОБЕДА!", "green", true);
-								var timeElapsed = Date.now() - whenLastStarted;
-								const minutes = Math.floor(timeElapsed/60000);
-								const seconds = Math.floor(timeElapsed/1000) % 60;
-								informUser("Отне ти " + minutes + "мин " + seconds + "сек.", "black");
-								editBox.style.display = "none";
-								btnStartOver.style.display = "inline";
+								win();
 							} else {
 								currentPromptIndex++;
 								updateProgressIndicator();
 								showPrompt();
+								isFirstTry = true;
 							}
 						} else {
 							informUser("Пробвай пак.", "black");
 							showPrompt();
+							isFirstTry = false;
 						}
 						editBox.value = "";
-						console.log("NULIRAH");
 					}
 				}
 			);
