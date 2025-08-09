@@ -19,7 +19,9 @@
 			}
 			#progressIndicator {
 				font-size: 1.2em !important;
-				float: right;
+				position: fixed;
+				top: 5px;
+				right: 5px;
 				background-color: green;
 				border-radius: 6px;
 				color: white;
@@ -151,6 +153,7 @@
 							isFirstTry = false;
 						}
 						editBox.value = "";
+						window.scrollTo(0, document.body.scrollHeight);
 					}
 				}
 			);
